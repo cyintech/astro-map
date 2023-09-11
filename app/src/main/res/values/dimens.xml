@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="text_data_padding">4dp</dimen>
+    <dimen name="column_padding">8dp</dimen>
+    <dimen name="text_padding">16dp</dimen>
+    <dimen name="box_height_for_map">400dp</dimen>
+    <dimen name="column_height">150dp</dimen>
+    <dimen name="button_width">200dp</dimen>
+    <dimen name="button_padding_bottom">200dp</dimen>
+</resources>

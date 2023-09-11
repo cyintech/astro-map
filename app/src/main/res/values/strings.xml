@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">MyJPMCAndroid</string>
+    <string name="your_location">Your Location</string>
+    <string name="iss_location">ISS Location</string>
+    <string name="toolbar_title">ISS Locator</string>
+    <string name="proceed">Proceed</string>
+    <string name="no_thanks">No, Thanks</string>
+    <string name="Distance">Distance: %1s miles</string>
+
+    <string name="start_screen_app_purpose">"This app shows how far is your location from the ISS (International Space Station).</string>
+    <string name="alert_dialog_for_location_permission_title">Location Permission</string>
+    <string name="alert_dialog_for_location_permission_msg">We need access to your precise location to calculate the accurate possible distance.\nIf you agree, please click Proceed to choose Precise location to either give all the time or only this time access.</string>
+</resources>
