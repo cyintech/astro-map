@@ -1,7 +1,5 @@
-package com.csk.myjpmcandroid.ui.screen
+package com.csk.myjpmcandroid.ui
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,15 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.csk.myjpmcandroid.R
+import com.csk.myjpmcandroid.ui.screen.HomeScreen
 import com.csk.myjpmcandroid.ui.viewmodel.ISSInfoViewModel
 
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MySolutionApp() {
     val issInfoViewModel: ISSInfoViewModel = hiltViewModel()
-    Scaffold(topBar = { MyTopAppBar()}) { innerPadding->
+    Scaffold(topBar = { MyTopAppBar() }) { innerPadding->
         HomeScreen(issInfoViewModel, modifier = Modifier.padding(innerPadding))
     }
 }

@@ -1,10 +1,10 @@
 package com.csk.myjpmcandroid.di.module
 
 import android.content.Context
-import com.csk.myjpmcandroid.data.RecentLocationRepository
+import com.csk.myjpmcandroid.domain.RecentLocationRepository
 import com.csk.myjpmcandroid.data.source.local.RecentLocationDatabase
 import com.csk.myjpmcandroid.data.source.local.dao.RecentLocationDao
-import com.csk.myjpmcandroid.domain.RecentLocationRepositoryImpl
+import com.csk.myjpmcandroid.data.RecentLocationRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,7 +30,7 @@ object OfflineModule {
 
     @Provides
     @Singleton
-    fun providesRecentRepo(recentLocationDao: RecentLocationDao): RecentLocationRepository{
+    fun providesRecentRepo(recentLocationDao: RecentLocationDao): RecentLocationRepository {
         return RecentLocationRepositoryImpl(recentLocationDao)
     }
 }

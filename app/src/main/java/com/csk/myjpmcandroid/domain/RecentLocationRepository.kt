@@ -1,4 +1,4 @@
-package com.csk.myjpmcandroid.data
+package com.csk.myjpmcandroid.domain
 
 import com.csk.myjpmcandroid.data.source.local.model.UserISSDistance
 import kotlinx.coroutines.flow.Flow

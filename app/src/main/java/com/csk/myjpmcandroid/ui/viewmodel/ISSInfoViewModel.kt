@@ -4,14 +4,13 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.csk.myjpmcandroid.data.ISSInfoRepository
-import com.csk.myjpmcandroid.data.RecentLocationRepository
+import com.csk.myjpmcandroid.domain.ISSInfoRepository
+import com.csk.myjpmcandroid.domain.RecentLocationRepository
 import com.csk.myjpmcandroid.data.model.ISSAstros
 import com.csk.myjpmcandroid.data.model.ISSLocation
 import com.csk.myjpmcandroid.data.source.local.model.UserISSDistance
 import com.csk.myjpmcandroid.model.UserAndISSLocation
 import com.csk.myjpmcandroid.model.UserLocation
-import com.csk.myjpmcandroid.util.DistanceCalculatorInMiles
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,11 +19,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import okio.IOException
+import java.io.IOException
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 sealed interface ISSInfoUiState {
     data class Success(val issInfo: ISSInfo) : ISSInfoUiState
@@ -58,6 +55,9 @@ class ISSInfoViewModel @Inject constructor(
     private var _userAndISSLocation = MutableStateFlow(UserAndISSLocation())
     val userAndISSLocation = _userAndISSLocation
 
+    private var _recentData = MutableStateFlow(RecentItemUiState())
+    var recentData : StateFlow<RecentItemUiState> = _recentData
+
     fun setAskPermission(ask: Boolean){
         _askPermission.value = ask
     }
@@ -70,34 +70,15 @@ class ISSInfoViewModel @Inject constructor(
         getISSLocation()
     }
 
-    suspend fun insertData() {
-        val user = _userAndISSLocation.value.userLocation!!
-        val iss = _userAndISSLocation.value.issLocation!!
-        val record = UserISSDistance(
-            userLocation = "lat = ${user.latitude}, long = ${user.longitude}",
-            issLocation = "lat = ${iss.issPosition.latitude}, long = ${iss.issPosition.longitude}",
-            distance = _distance.toString()
-        )
-
-        recentLocationRepository.insert(record)
+    init {
+        readAllDataFromDb()
     }
-
-    fun readAllDataFromDb(): StateFlow<RecentItemUiState> =
-        recentLocationRepository.getAllLocations().map {
-            RecentItemUiState(it)
-        }.stateIn(
-            viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = RecentItemUiState()
-        )
 
     private fun makeApiCall() = viewModelScope.launch {
         try {
             val issLocation = issInfoRepository.getISSLocation()
             val issAstros = issInfoRepository.getISSOnBoardAstronauts()
-            _userAndISSLocation.update {
-                it.copy(issLocation = issLocation)
-            }
+
             val issInfo = ISSInfo(issLocation = issLocation, issAstros = issAstros)
             _issInfoUiState.value = ISSInfoUiState.Success(issInfo = issInfo)
             Log.i("HomeScreen","from ViewModel: lat = ${issInfo.issLocation?.issPosition?.latitude}, long = ${issInfo.issLocation?.issPosition?.longitude}")
@@ -109,7 +90,6 @@ class ISSInfoViewModel @Inject constructor(
             Log.i("ERROR", "${httpException.message}")
         }
 
-        calculateDistance(_userAndISSLocation.value)
     }
 
 
@@ -136,27 +116,31 @@ class ISSInfoViewModel @Inject constructor(
         }
     }
 
+    // This read all the data from the local db but we only get 5 latest records to show on the UI
+    fun readAllDataFromDb(){
 
+        viewModelScope.launch {
+            try {
+                val result = recentLocationRepository.getAllLocations().map {
+                    RecentItemUiState(it.takeLast(10))
+                }
+                recentData = result.stateIn(
+                    this,
+                    SharingStarted.WhileSubscribed(5000),
+                    RecentItemUiState()
+                )
+
+            }catch (ioException: IOException){
+                _recentData.value = RecentItemUiState(itemList = emptyList())
+            }
+
+        }
+    }
 
     fun askPermission(ask: Boolean) { _askPermission.value=ask}
 
     fun updateUserLocation(userLocation: UserLocation){
         _userLocation.value = userLocation
-    }
-
-    fun calculateDistance(userAndISSLocation: UserAndISSLocation) {
-
-        val lat1 = userAndISSLocation.userLocation?.latitude ?: 0.0
-        val long1 = userAndISSLocation.userLocation?.longitude ?: 0.0
-        val lat2 = userAndISSLocation.issLocation?.issPosition?.latitude?.toDouble() ?: 0.0
-        val long2 = userAndISSLocation.issLocation?.issPosition?.longitude?.toDouble() ?: 0.0
-
-        val distance = DistanceCalculatorInMiles.distance(lat1 = lat1, lon1 = long1, lat2=lat2, lon2 = long2)
-        _distance.value = roundToTwoDecimalPoints(distance)
-    }
-
-    private fun roundToTwoDecimalPoints(distance: Double): Double {
-        return (distance*100.0).roundToInt()/100.0
     }
 
 }
