@@ -1,10 +1,12 @@
 package com.csk.myjpmcandroid.ui.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.csk.myjpmcandroid.domain.RecentLocationRepository
 import com.csk.myjpmcandroid.data.source.local.model.UserISSDistance
+import com.csk.myjpmcandroid.domain.GetAddressUseCase
 import com.csk.myjpmcandroid.model.UserAndISSLocation
 import com.csk.myjpmcandroid.util.DistanceCalculatorInMiles
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +22,9 @@ import kotlin.math.roundToInt
  */
 
 @HiltViewModel
-class LocationViewModel @Inject constructor(private val recentLocationRepository: RecentLocationRepository): ViewModel() {
+class LocationViewModel @Inject constructor(
+    private val recentLocationRepository: RecentLocationRepository,
+    private val addressUseCase: GetAddressUseCase): ViewModel() {
 
     private var _distance = mutableDoubleStateOf(0.0)
     val distance = _distance
@@ -41,6 +45,19 @@ class LocationViewModel @Inject constructor(private val recentLocationRepository
                 issLocation = "lat = $lat2, long = $long2",
                 distance = roundToTwoDecimalPoints(distance).toString()
             )
+
+            val userLatLng = "$lat1,$long1"
+            val issLatLng = "$lat2,$long2"
+            try {
+                val userAddress = addressUseCase(userLatLng).first().formatted_address
+                val issAddress = addressUseCase(issLatLng).first().formatted_address
+                Log.i("HomeScreen","Address from GoogleMaps User = $userAddress")
+                Log.i("HomeScreen","Address from GoogleMaps User = $issAddress")
+            }catch (exception: Exception){
+                Log.i("HomeScreen","Exception on Address from GoogleMaps")
+            }
+
+
             withContext(Dispatchers.IO){
                 recentLocationRepository.insert(record)
             }

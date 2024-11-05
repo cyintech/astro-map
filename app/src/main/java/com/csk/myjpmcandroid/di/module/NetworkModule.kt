@@ -1,15 +1,20 @@
 package com.csk.myjpmcandroid.di.module
 
 import com.csk.myjpmcandroid.BuildConfig
+import com.csk.myjpmcandroid.data.GoogleMapsRepoImpl
 import com.csk.myjpmcandroid.domain.ISSInfoRepository
 import com.csk.myjpmcandroid.data.source.network.ISSNetworkApi
 import com.csk.myjpmcandroid.data.ISSInfoRepositoryImpl
+import com.csk.myjpmcandroid.data.source.network.GoogleMapsNetworkApi
+import com.csk.myjpmcandroid.domain.GetAddressUseCase
+import com.csk.myjpmcandroid.domain.GoogleMapsRepo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 import javax.inject.Singleton
 
 @Module
@@ -35,5 +40,23 @@ object NetworkModule {
     @Singleton
     fun provideIssInfoRepository(networkApi: ISSNetworkApi): ISSInfoRepository {
         return ISSInfoRepositoryImpl(networkApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGoogleMapsNetworkApi(): GoogleMapsNetworkApi{
+        return retrofit.create(GoogleMapsNetworkApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGoogleMapsRepo(googleMapsNetworkApi: GoogleMapsNetworkApi): GoogleMapsRepo{
+        return GoogleMapsRepoImpl(googleMapsNetworkApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetAddressUseCase(googleMapsRepo: GoogleMapsRepo): GetAddressUseCase{
+        return GetAddressUseCase(googleMapsRepo)
     }
 }
