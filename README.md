@@ -54,8 +54,8 @@ AstroMap follows **Clean Architecture** principles to ensure the codebase is mai
 5. Build and run the app on an emulator or physical device.
 
 ## 📸 Screenshots
-
-*(Add your screenshots here to make it even more impressive!)*
+<img width="1080" height="2404" alt="Screenshot_20260417-203944" src="https://github.com/user-attachments/assets/84bd58b9-a870-4967-a343-a62a5ff1de0e" />
+<img width="1080" height="2404" alt="Screenshot_20260417-203937" src="https://github.com/user-attachments/assets/b61ffddb-2c47-4807-86ae-2cfa6a0dd8d9" />
 
 ---
 Developed with ❤️ by [Cyril Khokhar]
