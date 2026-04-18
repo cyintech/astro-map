@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -26,7 +28,21 @@ android {
     buildTypes {
         debug {
             isMinifyEnabled = false
+            val properties = Properties()
+            val localPropertiesFile = project.rootProject.file("local.properties")
+            if (localPropertiesFile.exists()) {
+                properties.load(localPropertiesFile.inputStream())
+            }
+            val mapsApiKey = properties.getProperty("MAPS_API_KEY") ?: ""
+            
             buildConfigField("String", "BASE_URL", "\"http://api.open-notify.org/\"")
+            buildConfigField("String", "MAPS_API_KEY", "\"$mapsApiKey\"")
+            resValue("string", "maps_api_key", mapsApiKey)
+        }
+        release {
+            isMinifyEnabled = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // Add similar logic for release keys
         }
     }
     compileOptions {

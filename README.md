@@ -35,21 +35,18 @@ AstroMap follows **Clean Architecture** principles to ensure the codebase is mai
 ### Prerequisites
 
 - Android Studio Iguana or newer.
-- A Google Maps API Key (Place it in `AndroidManifest.xml`).
+- A Google Maps API Key (Place it in local.properties).
 
 ### Installation
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/AstroMap.git
+   git clone https://github.com/cyintech/AstroMap.git
    ```
 2. Open the project in Android Studio.
 3. Sync the project with Gradle files.
-4. Add your Google Maps API Key in `app/src/main/AndroidManifest.xml`:
+4. Add your Google Maps API Key in local.properties (Note: You will need to generate one from the Google Cloud Console if you don't have it)
    ```xml
-   <meta-data
-       android:name="com.google.android.geo.API_KEY"
-       android:value="YOUR_API_KEY_HERE" />
    ```
 5. Build and run the app on an emulator or physical device.
 
