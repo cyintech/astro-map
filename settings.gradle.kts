@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "MyJPMCAndroid"
+rootProject.name = "AstroMap"
 include(":app")

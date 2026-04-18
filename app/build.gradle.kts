@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.csk.myjpmcandroid"
+    namespace = "com.csk.astromap"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.csk.myjpmcandroid"
+        applicationId = "com.csk.astromap"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -101,6 +101,9 @@ dependencies {
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.room:room-testing:$room_version")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
+    testImplementation("io.mockk:mockk:1.13.5")
+    testImplementation("app.cash.turbine:turbine:1.0.0")
 
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyJPMCAndroid</string>
+    <string name="app_name">AstroMap</string>
     <string name="your_location">Your Location</string>
     <string name="iss_location">ISS Location</string>
     <string name="toolbar_title">ISS Locator</string>
